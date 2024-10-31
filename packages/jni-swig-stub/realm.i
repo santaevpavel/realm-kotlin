@@ -14,7 +14,7 @@ using namespace realm::jni_util;
 
 %include "typemaps.i"
 %include "stdint.i"
-%include "arrays_java_fixed.i"
+%include "arrays_java.i"
 
 // We do not want to use BigInteger for uintt64_t as we are not expecting overflows
 %apply int64_t {uint64_t};
@@ -314,7 +314,7 @@ SWIG_JavaArrayArgoutSchar(jenv, jarr$argnum, (signed char *)$1, $input);
 // Enable passing void** as long[]
 %apply int64_t[] {void **};
 %typemap(in) void ** (jlong *jarr) %{
-    if(!SWIG_JavaArrayInLonglong(jenv, &jarr, (long long **)&$1, $input)) return $null; "!!! 1"
+    if(!SWIG_JavaArrayInLonglong(jenv, &jarr, (long long **)&$1, $input)) return $null;
 %}
 %typemap(out) void ** %{
     $result = SWIG_JavaArrayOutLonglong(jenv, (long long *)result, arg1->size);
@@ -322,7 +322,7 @@ SWIG_JavaArrayArgoutSchar(jenv, jarr$argnum, (signed char *)$1, $input);
 %typemap(argout) void ** %{
     SWIG_JavaArrayArgoutLonglong(jenv, jarr$argnum, (long long *)$1, $input);
 %}
-%typemap(freearg) void**;
+%typemap(freearg) long long**;
 
 // Reuse above typemap for void** (from apply int64_t[]) {void **}) to pass various pointer types as
 // long[]

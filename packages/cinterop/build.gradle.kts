@@ -339,8 +339,8 @@ android {
                     // CCache is not officially supported on Windows and there are problems
                     // using it with the Android NDK. So disable for now.
                     // See https://github.com/ccache/ccache/discussions/447 for more information.
-                    arguments("-DCMAKE_CXX_COMPILER_LAUNCHER=ccache")
-                    arguments("-DCMAKE_C_COMPILER_LAUNCHER=ccache")
+                   // arguments("-DCMAKE_CXX_COMPILER_LAUNCHER=ccache")
+                    //arguments("-DCMAKE_C_COMPILER_LAUNCHER=ccache")
                 }
                 targets.add("realmc")
             }
