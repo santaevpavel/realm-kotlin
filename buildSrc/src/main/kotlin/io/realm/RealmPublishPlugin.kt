@@ -34,6 +34,7 @@ import org.gradle.plugins.signing.SigningExtension
 import org.gradle.plugins.signing.SigningPlugin
 import java.io.File
 import java.time.Duration
+import java.util.Properties
 
 // Custom options for POM configurations that might differ between Realm modules
 open class PomOptions {
@@ -97,6 +98,7 @@ class RealmPublishPlugin : Plugin<Project> {
         } else {
             configureSubProject(project, signBuild)
             configureTestRepository(project)
+            configureOuraRepository(project)
         }
     }
 
@@ -129,6 +131,21 @@ class RealmPublishPlugin : Plugin<Project> {
                 isRequired = signBuild
                 useInMemoryPgpKeys(keyId, ringFile, password)
                 sign(project.extensions.getByType<PublishingExtension>().publications)
+            }
+        }
+    }
+
+    private fun configureOuraRepository(project: Project) {
+        val username: String = project.rootProject.findLocalProperty("oura.repo.username").orEmpty()
+        val password: String = project.rootProject.findLocalProperty("oura.repo.password").orEmpty()
+        project.extensions.getByType<PublishingExtension>().apply {
+            repositories {
+                maven {
+                    name = "Oura"
+                    url = project.uri("https://maven.pkg.github.com/jouzen/android-packages")
+                    credentials.username = username
+                    credentials.password = password
+                }
             }
         }
     }
@@ -196,3 +213,13 @@ class RealmPublishPlugin : Plugin<Project> {
         }
     }
 }
+
+fun Project.findLocalProperty(property: String): String? {
+    val properties = Properties()
+    val propertiesFile = file("local.properties")
+    if (propertiesFile.exists()) {
+        properties.load(propertiesFile.inputStream())
+    }
+    return properties.getProperty(property)
+}
+
