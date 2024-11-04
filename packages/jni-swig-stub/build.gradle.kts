@@ -50,7 +50,9 @@ tasks.create("realmWrapperJvm") {
 }
 
 tasks.named("compileJava") {
-    dependsOn("realmWrapperJvm")
+    // Comment this line to disable SWIG generation for modifying realmc.cpp to
+    // comment 2457 line ("delete [] arg2;")
+    // dependsOn("realmWrapperJvm")
 }
 
 realmPublish {
