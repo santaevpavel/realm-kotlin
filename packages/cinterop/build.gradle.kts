@@ -317,8 +317,8 @@ android {
                     // CCache is not officially supported on Windows and there are problems
                     // using it with the Android NDK. So disable for now.
                     // See https://github.com/ccache/ccache/discussions/447 for more information.
-                    arguments("-DCMAKE_CXX_COMPILER_LAUNCHER=ccache")
-                    arguments("-DCMAKE_C_COMPILER_LAUNCHER=ccache")
+                    //arguments("-DCMAKE_CXX_COMPILER_LAUNCHER=ccache")
+                    //arguments("-DCMAKE_C_COMPILER_LAUNCHER=ccache")
                 }
                 targets.add("realmc")
             }
@@ -338,7 +338,7 @@ android {
         targetCompatibility = Versions.targetCompatibilityVersion
     }
 }
-
+/*
 // Building Mach-O universal binary with 2 architectures: [x86_64] [arm64] (Apple M1) for macOS
 if (HOST_OS.isMacOs()) {
     val capiMacosUniversal by tasks.registering {
@@ -390,7 +390,7 @@ if (HOST_OS.isMacOs()) {
             dependsOn(capiMacosUniversal)
         }
     }
-}
+}*/
 
 val buildJVMSharedLibs: TaskProvider<Task> by tasks.registering {
     if (HOST_OS.isMacOs()) {
