@@ -381,7 +381,7 @@ import static io.realm.kotlin.internal.interop.realm_errno_e.*;
 %typemap(argout) uint8_t* %{
 SWIG_JavaArrayArgoutSchar(jenv, jarr$argnum, (signed char *)$1, $input);
 %}
-%typemap(freearg) signed char **;
+%typemap(freearg) uint8_t*;
 
 // Reuse above typemap for passing uint8_t[64] parameter for realm_sync_client_config_set_metadata_encryption_key as Byte[]
 %apply uint8_t* {uint8_t [64]};
@@ -397,7 +397,7 @@ SWIG_JavaArrayArgoutSchar(jenv, jarr$argnum, (signed char *)$1, $input);
 %typemap(argout) void ** %{
     SWIG_JavaArrayArgoutLonglong(jenv, jarr$argnum, (long long *)$1, $input);
 %}
-%typemap(freearg) long long**;
+%typemap(freearg) void**;
 
 // Reuse above typemap for void** (from apply int64_t[]) {void **}) to pass various pointer types as
 // long[]
