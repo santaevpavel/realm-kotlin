@@ -321,7 +321,7 @@ bool realm_object_is_valid(const realm_object_t*);
     *($1_type*)&jresult = result;
 }
 
-%typemap(out) bool {
+%typemap(ret) bool {
     if (!result) {
         bool exception_thrown = throw_last_error_as_java_exception(jenv);
         if (exception_thrown) {
