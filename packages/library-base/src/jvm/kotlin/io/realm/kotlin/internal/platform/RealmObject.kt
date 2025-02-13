@@ -17,6 +17,8 @@
 package io.realm.kotlin.internal.platform
 
 import io.realm.kotlin.internal.RealmObjectCompanion
+import io.realm.kotlin.log.LogLevel
+import io.realm.kotlin.log.RealmLog
 import io.realm.kotlin.types.BaseRealmObject
 import kotlin.reflect.KClass
 
@@ -27,7 +29,7 @@ import kotlin.reflect.KClass
 internal actual fun <T : Any> realmObjectCompanionOrNull(clazz: KClass<T>): RealmObjectCompanion? {
     val cachedClass = reflectionCache[clazz]
     if (cachedClass != null) {
-        return cachedClass
+        return cachedClass.value
     }
     val companion = try {
         Class.forName("${clazz.java.name}\$Companion").kotlin
@@ -36,20 +38,21 @@ internal actual fun <T : Any> realmObjectCompanionOrNull(clazz: KClass<T>): Real
             // For Parcelable classes
             Class.forName("${clazz.java.name}\$CREATOR").kotlin
         } catch (thr: Throwable) {
+            RealmLog.doLog(LogLevel.ERROR, null,
+                { "Couldn't find companion object of class '${clazz.java.simpleName}'" })
             null
         }
     }?.objectInstance as? RealmObjectCompanion
 
-    if (companion != null) {
-        reflectionCache[clazz] = companion
-    }
-
+    reflectionCache[clazz] = Holder(companion)
     return companion
 }
 
-private val reflectionCache = mutableMapOf<KClass<*>, RealmObjectCompanion>()
+private val reflectionCache = mutableMapOf<KClass<*>, Holder<RealmObjectCompanion?>>()
 
 @PublishedApi
 internal actual fun <T : BaseRealmObject> realmObjectCompanionOrThrow(clazz: KClass<T>): RealmObjectCompanion =
     realmObjectCompanionOrNull(clazz)
         ?: error("Couldn't find companion object of class '${clazz.simpleName}'.\nA common cause for this is when the `io.realm.kotlin` is not applied to the Gradle module that contains the '${clazz.simpleName}' class.")
+
+private class Holder<T>(val value: T)
